@@ -52,7 +52,7 @@
           <div class="panel-label"><span>02</span> TRACE SETTINGS</div>
 
           <div class="control-block">
-            <label class="field">
+            <label class="field" data-tooltip="Choose how the image is traced: one-color black and white, shades of gray, or full color.">
               <span class="field-name">Color mode</span>
               <select id="colorMode" data-heavy>
                 <option value="bw">Black &amp; white</option>
@@ -61,43 +61,43 @@
               </select>
             </label>
 
-            <label class="field">
+            <label class="field" data-tooltip="Sets the maximum number of colors used in the SVG. Fewer colors make smaller, simpler files.">
               <span class="field-name">Color count <em id="colorCountVal">8</em></span>
               <input type="range" id="colorCount" min="2" max="64" value="8" data-heavy />
             </label>
 
-            <label class="field">
+            <label class="field" data-tooltip="Controls how strongly traced paths are rounded. Higher values produce smoother curves with fewer sharp changes.">
               <span class="field-name">Path smoothing <em id="smoothingVal">62</em></span>
               <input type="range" id="smoothing" min="0" max="100" value="62" data-heavy />
             </label>
 
-            <label class="field">
+            <label class="field" data-tooltip="Angles sharper than this value are kept as corners instead of being smoothed into curves.">
               <span class="field-name">Corner threshold <em id="cornerVal">32°</em></span>
               <input type="range" id="cornerThreshold" min="5" max="90" value="32" data-heavy />
             </label>
 
-            <label class="field">
+            <label class="field" data-tooltip="Controls how closely paths follow the source image. Higher values preserve more detail but create more nodes.">
               <span class="field-name">Detail level <em id="detailVal">78</em></span>
               <input type="range" id="detailLevel" min="1" max="100" value="78" data-heavy />
             </label>
 
-            <label class="field">
+            <label class="field" data-tooltip="Removes isolated regions smaller than this area to reduce noise and unnecessary paths.">
               <span class="field-name">Speckle suppression <em id="speckleVal">6 px</em></span>
               <input type="range" id="speckleSize" min="1" max="80" value="6" data-heavy />
             </label>
 
-            <label class="field">
+            <label class="field" data-tooltip="Expands neighboring color layers slightly to prevent thin gaps between adjacent fills.">
               <span class="field-name">Path overlap <em id="pathOverlapVal">1 px</em></span>
               <input type="range" id="pathOverlap" min="0" max="3" step="1" value="1" data-heavy />
             </label>
             <p class="hint">Grow color layers so adjacent fills meet</p>
 
-            <label class="field check">
+            <label class="field check" data-tooltip="Detects the image-edge color and removes matching background areas from the trace.">
               <input type="checkbox" id="removeBackground" checked data-heavy />
               <span>Background removal</span>
             </label>
 
-            <label class="field" id="bgThreshField">
+            <label class="field" id="bgThreshField" data-tooltip="Sets how closely a color must match the detected background to be removed. Higher values remove a wider color range.">
               <span class="field-name">BG threshold <em id="bgThreshVal">36</em></span>
               <input type="range" id="backgroundThreshold" min="4" max="96" value="36" data-heavy />
             </label>
@@ -106,29 +106,29 @@
           <div class="control-block light">
             <div class="panel-sublabel">LIVE EXPORT</div>
 
-            <label class="field check">
+            <label class="field check" data-tooltip="Exports traced paths as outlines instead of solid filled shapes.">
               <input type="checkbox" id="strokeMode" data-live />
               <span>Stroke instead of fill</span>
             </label>
 
-            <label class="field">
+            <label class="field" data-tooltip="Sets the outline thickness when stroke mode is enabled.">
               <span class="field-name">Stroke width <em id="strokeWidthVal">1.25</em></span>
               <input type="range" id="strokeWidth" min="0.25" max="6" step="0.25" value="1.25" data-live />
             </label>
 
             <div class="field-row">
-              <label class="field">
+              <label class="field" data-tooltip="Sets the exported SVG width. Use 0 to keep the source image width.">
                 <span class="field-name">Out W</span>
                 <input type="number" id="outWidth" min="0" step="1" value="0" placeholder="auto" data-live />
               </label>
-              <label class="field">
+              <label class="field" data-tooltip="Sets the exported SVG height. Use 0 to keep the source image height.">
                 <span class="field-name">Out H</span>
                 <input type="number" id="outHeight" min="0" step="1" value="0" placeholder="auto" data-live />
               </label>
             </div>
             <p class="hint">0 = source dimensions</p>
 
-            <label class="field check">
+            <label class="field check" data-tooltip="Removes optional whitespace and shortens markup to reduce the exported SVG file size.">
               <input type="checkbox" id="minify" data-live />
               <span>Minified SVG</span>
             </label>

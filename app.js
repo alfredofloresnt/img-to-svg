@@ -58,6 +58,105 @@ let expandMode = null;
 let heavyTimer = null;
 let convertGen = 0;
 
+function initConfigurationTooltips() {
+  const tooltip = document.createElement('div');
+  tooltip.id = 'configTooltip';
+  tooltip.className = 'config-tooltip';
+  tooltip.setAttribute('role', 'tooltip');
+  tooltip.dataset.open = 'false';
+  document.body.appendChild(tooltip);
+
+  let activeTrigger = null;
+
+  function positionTooltip() {
+    if (!activeTrigger) return;
+
+    const gap = 9;
+    const edge = 8;
+    const triggerRect = activeTrigger.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const placeAbove = triggerRect.top >= tooltipRect.height + gap + edge;
+    const top = placeAbove
+      ? triggerRect.top - tooltipRect.height - gap
+      : triggerRect.bottom + gap;
+    const centeredLeft = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
+    const left = Math.min(
+      window.innerWidth - tooltipRect.width - edge,
+      Math.max(edge, centeredLeft),
+    );
+
+    tooltip.style.top = `${Math.round(top)}px`;
+    tooltip.style.left = `${Math.round(left)}px`;
+    tooltip.style.setProperty(
+      '--tooltip-arrow-x',
+      `${Math.round(triggerRect.left + triggerRect.width / 2 - left)}px`,
+    );
+    tooltip.dataset.placement = placeAbove ? 'above' : 'below';
+  }
+
+  function showTooltip(trigger) {
+    if (activeTrigger && activeTrigger !== trigger) {
+      activeTrigger.setAttribute('aria-expanded', 'false');
+    }
+    activeTrigger = trigger;
+    tooltip.textContent = trigger.closest('[data-tooltip]').dataset.tooltip;
+    tooltip.dataset.open = 'true';
+    trigger.setAttribute('aria-expanded', 'true');
+    positionTooltip();
+  }
+
+  function hideTooltip(trigger = activeTrigger) {
+    if (!activeTrigger || (trigger && trigger !== activeTrigger)) return;
+    activeTrigger.setAttribute('aria-expanded', 'false');
+    activeTrigger = null;
+    tooltip.dataset.open = 'false';
+  }
+
+  document.querySelectorAll('[data-tooltip]').forEach((field) => {
+    const label = field.querySelector('.field-name') || field.querySelector(':scope > span');
+    if (!label) return;
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'info-trigger';
+    trigger.setAttribute('aria-label', `About ${label.textContent.trim()}`);
+    trigger.setAttribute('aria-describedby', tooltip.id);
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.innerHTML = `
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.25"/>
+        <path d="M8 7.1v4M8 4.5v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    `;
+    label.insertBefore(trigger, label.querySelector('em'));
+
+    trigger.addEventListener('mouseenter', () => showTooltip(trigger));
+    trigger.addEventListener('mouseleave', () => {
+      if (document.activeElement !== trigger) hideTooltip(trigger);
+    });
+    trigger.addEventListener('focus', () => showTooltip(trigger));
+    trigger.addEventListener('blur', () => hideTooltip(trigger));
+    trigger.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      showTooltip(trigger);
+    });
+    trigger.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        hideTooltip(trigger);
+        trigger.blur();
+      }
+    });
+  });
+
+  document.addEventListener('pointerdown', (event) => {
+    if (!event.target.closest('.info-trigger')) hideTooltip();
+  });
+  window.addEventListener('resize', positionTooltip);
+  window.addEventListener('scroll', positionTooltip, true);
+}
+
 function readSettings() {
   return {
     ...DEFAULT_SETTINGS,
@@ -368,4 +467,5 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
+initConfigurationTooltips();
 updateLabels();

@@ -265,7 +265,7 @@ body {
 
 .field-name {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   font-family: var(--mono);
   font-size: 0.68rem;
   letter-spacing: 0.04em;
@@ -275,6 +275,7 @@ body {
 }
 
 .field-name em {
+  margin-left: auto;
   font-style: normal;
   color: var(--ink);
   font-weight: 500;
@@ -298,6 +299,93 @@ body {
   accent-color: var(--signal);
   width: 1rem;
   height: 1rem;
+}
+
+.field.check > span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.info-trigger {
+  width: 1rem;
+  height: 1rem;
+  margin: 0 0 0 0.35rem;
+  padding: 0;
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: help;
+  vertical-align: middle;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.info-trigger svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.info-trigger:hover,
+.info-trigger:focus-visible,
+.info-trigger[aria-expanded="true"] {
+  color: var(--signal-dim);
+  background: rgba(232, 93, 4, 0.12);
+  outline: none;
+}
+
+.info-trigger:focus-visible {
+  box-shadow: 0 0 0 1px var(--signal);
+}
+
+.config-tooltip {
+  position: fixed;
+  z-index: 2147483647;
+  width: max-content;
+  max-width: min(260px, calc(100vw - 24px));
+  padding: 0.65rem 0.75rem;
+  color: #e9edf1;
+  background: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 10px 28px rgba(14, 17, 20, 0.28);
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(3px);
+  transition: opacity 0.12s, transform 0.12s, visibility 0.12s;
+}
+
+.config-tooltip[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.config-tooltip::after {
+  content: "";
+  position: absolute;
+  left: var(--tooltip-arrow-x, 50%);
+  width: 8px;
+  height: 8px;
+  background: var(--ink);
+  border: solid rgba(255, 255, 255, 0.16);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.config-tooltip[data-placement="above"]::after {
+  bottom: -5px;
+  border-width: 0 1px 1px 0;
+}
+
+.config-tooltip[data-placement="below"]::after {
+  top: -5px;
+  border-width: 1px 0 0 1px;
 }
 
 input[type="range"] {
