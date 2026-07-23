@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IMG to SVG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="mast">
+    <div class="mast-brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M6 22 L12 8 L18 18 L22 12 L26 22" fill="none" stroke="var(--signal)" stroke-width="2" stroke-linejoin="miter"/>
+        <line x1="6" y1="25" x2="26" y2="25" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+      </svg>
+      <div class="brand-text">
+        <h1 class="brand">IMG to SVG</h1>
+      </div>
+    </div>
+
+    <div class="mast-actions">
+      <button type="button" class="btn btn-primary" id="btnDownload" disabled>Download SVG</button>
+      <button type="button" class="btn" id="btnCopy" disabled>Copy SVG</button>
+    </div>
+  </header>
+
+  <main class="bench">
+    <aside class="rail" aria-label="Tools">
+      <div class="rail-scroll">
+        <section class="panel panel-source" aria-label="Upload image">
+          <div class="panel-label"><span>01</span> UPLOAD IMAGE</div>
+
+          <div
+            class="dropzone"
+            id="dropzone"
+            tabindex="0"
+            role="button"
+            aria-label="Upload image"
+          >
+            <p class="dropzone-title">Drop PNG / JPG / WebP / BMP</p>
+            <p class="dropzone-sub">or click to pick a single image</p>
+            <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/bmp" hidden />
+          </div>
+          <p class="file-meta" id="fileMeta">No image loaded</p>
+        </section>
+
+        <section class="panel panel-controls" aria-label="Trace settings">
+          <div class="panel-label"><span>02</span> TRACE SETTINGS</div>
+
+          <div class="control-block">
+            <label class="field">
+              <span class="field-name">Color mode</span>
+              <select id="colorMode" data-heavy>
+                <option value="bw">Black &amp; white</option>
+                <option value="grayscale">Grayscale</option>
+                <option value="color" selected>Full color</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field-name">Color count <em id="colorCountVal">8</em></span>
+              <input type="range" id="colorCount" min="2" max="64" value="8" data-heavy />
+            </label>
+
+            <label class="field">
+              <span class="field-name">Path smoothing <em id="smoothingVal">62</em></span>
+              <input type="range" id="smoothing" min="0" max="100" value="62" data-heavy />
+            </label>
+
+            <label class="field">
+              <span class="field-name">Corner threshold <em id="cornerVal">32°</em></span>
+              <input type="range" id="cornerThreshold" min="5" max="90" value="32" data-heavy />
+            </label>
+
+            <label class="field">
+              <span class="field-name">Detail level <em id="detailVal">78</em></span>
+              <input type="range" id="detailLevel" min="1" max="100" value="78" data-heavy />
+            </label>
+
+            <label class="field">
+              <span class="field-name">Speckle suppression <em id="speckleVal">6 px</em></span>
+              <input type="range" id="speckleSize" min="1" max="80" value="6" data-heavy />
+            </label>
+
+            <label class="field">
+              <span class="field-name">Path overlap <em id="pathOverlapVal">1 px</em></span>
+              <input type="range" id="pathOverlap" min="0" max="3" step="1" value="1" data-heavy />
+            </label>
+            <p class="hint">Grow color layers so adjacent fills meet</p>
+
+            <label class="field check">
+              <input type="checkbox" id="removeBackground" checked data-heavy />
+              <span>Background removal</span>
+            </label>
+
+            <label class="field" id="bgThreshField">
+              <span class="field-name">BG threshold <em id="bgThreshVal">36</em></span>
+              <input type="range" id="backgroundThreshold" min="4" max="96" value="36" data-heavy />
+            </label>
+          </div>
+
+          <div class="control-block light">
+            <div class="panel-sublabel">LIVE EXPORT</div>
+
+            <label class="field check">
+              <input type="checkbox" id="strokeMode" data-live />
+              <span>Stroke instead of fill</span>
+            </label>
+
+            <label class="field">
+              <span class="field-name">Stroke width <em id="strokeWidthVal">1.25</em></span>
+              <input type="range" id="strokeWidth" min="0.25" max="6" step="0.25" value="1.25" data-live />
+            </label>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-name">Out W</span>
+                <input type="number" id="outWidth" min="0" step="1" value="0" placeholder="auto" data-live />
+              </label>
+              <label class="field">
+                <span class="field-name">Out H</span>
+                <input type="number" id="outHeight" min="0" step="1" value="0" placeholder="auto" data-live />
+              </label>
+            </div>
+            <p class="hint">0 = source dimensions</p>
+
+            <label class="field check">
+              <input type="checkbox" id="minify" data-live />
+              <span>Minified SVG</span>
+            </label>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <section class="panel panel-preview" aria-label="Preview">
+      <div class="panel-label">
+        <span>03</span> PREVIEW
+        <span class="meta-chip" id="statusChip">READY</span>
+      </div>
+
+      <div class="preview-stage" id="previewStage">
+        <figure class="frame frame-src">
+          <div class="frame-head">
+            <figcaption>ORIGINAL</figcaption>
+            <button type="button" class="btn btn-expand" id="btnExpandSrc" disabled title="Expand original">
+              Expand
+            </button>
+          </div>
+          <div class="frame-body">
+            <canvas id="srcCanvas"></canvas>
+            <p class="frame-empty" id="srcEmpty">Awaiting image</p>
+          </div>
+        </figure>
+
+        <figure class="frame frame-out">
+          <div class="frame-head">
+            <figcaption>PREVIEW</figcaption>
+            <button type="button" class="btn btn-expand" id="btnExpandOut" disabled title="Expand preview">
+              Expand
+            </button>
+          </div>
+          <div class="frame-body" id="svgPreview">
+            <p class="frame-empty" id="outEmpty">Awaiting trace</p>
+          </div>
+        </figure>
+      </div>
+
+      <div class="stats-bar" id="statsBar">
+        <div class="stat"><span class="stat-k">SIZE</span><span class="stat-v" id="statBytes">—</span></div>
+        <div class="stat"><span class="stat-k">PATHS</span><span class="stat-v" id="statPaths">—</span></div>
+        <div class="stat"><span class="stat-k">NODES</span><span class="stat-v" id="statNodes">—</span></div>
+        <div class="stat"><span class="stat-k">VIEW</span><span class="stat-v" id="statView">—</span></div>
+      </div>
+
+      <details class="code-drawer">
+        <summary>SVG source</summary>
+        <pre id="svgCode" class="code-block" tabindex="0"></pre>
+      </details>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
